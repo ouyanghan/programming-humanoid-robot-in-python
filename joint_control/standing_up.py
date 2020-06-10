@@ -7,6 +7,7 @@
 
 
 from recognize_posture import PostureRecognitionAgent
+from keyframes import leftBellyToStand, leftBackToStand, rightBackToStand, rightBellyToStand
 
 
 class StandingUpAgent(PostureRecognitionAgent):
@@ -18,6 +19,24 @@ class StandingUpAgent(PostureRecognitionAgent):
         posture = self.posture
         # YOUR CODE HERE
 
+        # Do not interrupt a running sequence
+        if self.t_sequence_start is not None:
+            return
+
+        reactions = {
+            'Back': leftBackToStand,
+            'Left': leftBackToStand,
+            'Right': rightBackToStand,
+            'Belly': leftBellyToStand
+        }
+
+        # Alright, get up if we are down
+        if posture in reactions.keys():
+            self.keyframes = reactions[posture]()
+            # print(f'Trying to get up from posture {posture}')
+        else:
+            pass
+            # print(f'Posture is {posture}')
 
 class TestStandingUpAgent(StandingUpAgent):
     '''this agent turns off all motor to falls down in fixed cycles
