@@ -21,8 +21,7 @@
 
 
 from pid import PIDAgent
-from keyframes import hello
-
+from keyframes import *
 
 class AngleInterpolationAgent(PIDAgent):
     def __init__(self, simspark_ip='localhost',
@@ -33,6 +32,9 @@ class AngleInterpolationAgent(PIDAgent):
         super(AngleInterpolationAgent, self).__init__(simspark_ip, simspark_port, teamname, player_id, sync_mode)
         self.keyframes = ([], [], [])
 
+        # Start time for current movement sequence
+        self.t_sequence_start = None
+
     def think(self, perception):
         target_joints = self.angle_interpolation(self.keyframes, perception)
         self.target_joints.update(target_joints)
@@ -41,6 +43,32 @@ class AngleInterpolationAgent(PIDAgent):
     def angle_interpolation(self, keyframes, perception):
         target_joints = {}
         # YOUR CODE HERE
+
+        # Do nothing if no movement sequence is set
+        if len(self.keyframes[0]) == 0:
+            return target_joints
+
+        # Remember when we started a movement sequence
+        if self.t_sequence_start is None:
+            self.t_sequence_start = perception.time
+
+        # Keep track of the time elapsed
+        elapsed_time = perception.time - self.t_sequence_start
+        still_moving = False
+
+        # Update movement targets
+        for name, times, keys in zip(*keyframes):
+            for time, key in zip(times, keys):
+                dt = time - elapsed_time
+                if dt > 0:
+                    target_joints[name] = key[0]
+                    still_moving = True
+                    break
+
+        # Stop when sequence is finished
+        if not still_moving:
+            self.t_sequence_start = None
+            self.keyframes = ([], [], [])
 
         return target_joints
 
