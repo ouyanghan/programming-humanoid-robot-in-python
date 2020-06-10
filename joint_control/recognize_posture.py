@@ -34,8 +34,6 @@ class PostureRecognitionAgent(AngleInterpolationAgent):
             'Sit', 'Knee', 'HeadBack', 'StandInit', 'Stand', 'Frog', 'Right', 'Belly', 'Crouch', 'Left', 'Back'
         ]
 
-
-
     def think(self, perception):
         self.posture = self.recognize_posture(perception)
         return super(PostureRecognitionAgent, self).think(perception)
@@ -48,6 +46,7 @@ class PostureRecognitionAgent(AngleInterpolationAgent):
         posture = self.known_postures[int(self.posture_classifier.predict(data))]
 
         return posture
+
 
 if __name__ == '__main__':
     agent = PostureRecognitionAgent()
