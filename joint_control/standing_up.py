@@ -24,7 +24,7 @@ class StandingUpAgent(PostureRecognitionAgent):
             return
 
         reactions = {
-            'Back': leftBackToStand,
+            'Back': rightBackToStand,
             'Left': leftBackToStand,
             'Right': rightBackToStand,
             'Belly': leftBellyToStand
