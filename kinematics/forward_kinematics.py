@@ -35,9 +35,15 @@ class ForwardKinematicsAgent(AngleInterpolationAgent):
         self.transforms = {n: identity(4) for n in self.joint_names}
 
         # chains defines the name of chain and joints of the chain
-        self.chains = {'Head': ['HeadYaw', 'HeadPitch']
-                       # YOUR CODE HERE
-                       }
+        # http://doc.aldebaran.com/2-1/family/robots/bodyparts.html#effector-chain
+        # note: Simulation does not seem to have the WristYaw and Hand joint!
+        self.chains = {
+            'Head': ['HeadYaw', 'HeadPitch'],
+            'LArm': ['LShoulderPitch', 'LShoulderRoll', 'LElbowYaw', 'LElbowRoll'],
+            'LLeg': ['LHipYawPitch', 'LHipRoll', 'LHipPitch', 'LKneePitch', 'LKneePitch', 'LAnkleRoll'],
+            'RArm': ['RShoulderPitch', 'RShoulderRoll', 'RElbowYaw', 'RElbowRoll'],
+            'RLeg': ['RHipYawPitch', 'RHipRoll', 'RHipPitch', 'RKneePitch', 'RKneePitch', 'RAnkleRoll']
+        }
 
     def think(self, perception):
         self.forward_kinematics(perception.joint)
