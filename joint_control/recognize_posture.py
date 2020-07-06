@@ -38,13 +38,16 @@ class PostureRecognitionAgent(AngleInterpolationAgent):
         self.posture = self.recognize_posture(perception)
         return super(PostureRecognitionAgent, self).think(perception)
 
+    def get_posture_data(self, perception):
+        return np.array([[perception.joint[j] for j in self.posture_class_joints] + perception.imu])
+
     def recognize_posture(self, perception):
         posture = 'unknown'
         # YOUR CODE HERE
 
-        data = np.array([[perception.joint[j] for j in self.posture_class_joints] + perception.imu])
-        posture = self.known_postures[int(self.posture_classifier.predict(data))]
-
+        posture = self.known_postures[
+            int(self.posture_classifier.predict(self.get_posture_data(perception)))
+        ]
         return posture
 
 
